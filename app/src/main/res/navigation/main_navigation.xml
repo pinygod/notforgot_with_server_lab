@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/emptyMainScreenFragment">
+
+    <fragment
+        android:id="@+id/emptyMainScreenFragment"
+        android:name="com.example.notforgot.ui.fragments.EmptyMainScreenFragment"
+        android:label="fragment_empty_main_screen"
+        tools:layout="@layout/fragment_empty_main_screen" >
+        <action
+            android:id="@+id/action_show_notes"
+            app:destination="@id/mainScreenWithNotesFragment" />
+        <action
+            android:id="@+id/action_add_note"
+            app:destination="@id/createNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainScreenWithNotesFragment"
+        android:name="com.example.notforgot.ui.fragments.MainScreenWithNotesFragment"
+        android:label="fragment_main_screen_with_notes"
+        tools:layout="@layout/fragment_main_screen_with_notes" >
+        <action
+            android:id="@+id/action_note_details"
+            app:destination="@id/noteDetailsFragment" />
+        <action
+            android:id="@+id/action_add_note"
+            app:destination="@id/createNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/noteDetailsFragment"
+        android:name="com.example.notforgot.ui.fragments.NoteDetailsFragment"
+        android:label="fragment_note_details"
+        tools:layout="@layout/fragment_note_details" >
+        <action
+            android:id="@+id/action_back_from_details"
+            app:destination="@id/mainScreenWithNotesFragment" />
+        <action
+            android:id="@+id/action_redact_note"
+            app:destination="@id/createNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createNoteFragment"
+        android:name="com.example.notforgot.ui.fragments.CreateNoteFragment"
+        android:label="fragment_create_note"
+        tools:layout="@layout/fragment_create_note" >
+    <action
+        android:id="@+id/action_back_from_creation"
+        app:destination="@id/mainScreenWithNotesFragment" />
+    <action
+        android:id="@+id/action_successfully_added"
+        app:destination="@id/mainScreenWithNotesFragment" />
+    </fragment>
+</navigation>

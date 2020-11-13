@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Not Forgot</string>
+    <string name="email">Электронная почта</string>
+    <string name="password">Пароль</string>
+    <string name="login">Войти</string>
+    <string name="noacc_register">Нет аккаунта? <font color='#1554F6'>Зарегистрироваться</font></string>
+    <string name="haveacc_login">Есть аккаунт? <font color='#1554F6'><u>Войти</u></font></string>
+    <string name="register">Создать аккаунт</string>
+    <string name="create">Создать</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="surname">Фамилия</string>
+    <string name="name">Имя</string>
+    <string name="create_note">Добавить заметку</string>
+    <string name="redact_note">Редактировать</string>
+    <string name="category">Категория задачи</string>
+    <string name="save">Сохранить</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna wirl</string>
+    <string name="description">Описание</string>
+    <string name="note_name">Заголовок</string>
+    <string name="note_date_hint">Срок выполнения задачи</string>
+    <string name="add_category">Добавить категорию</string>
+    <string name="succesfull_save">Дело успешно сохранено</string>
+    <string name="priority">Приоритет</string>
+    <string name="low_priority">Низкий</string>
+    <string name="medium_priority">Средний</string>
+    <string name="high_priority">Высокий</string>
+    <string name="completed">Выполнено</string>
+    <string name="pending">В работе</string>
+    <string name="saving">Сохранение…</string>
+    <string name="note">Заметка</string>
+    <string-array name="priorities">
+        <item>@string/low_priority</item>
+        <item>@string/medium_priority</item>
+        <item>@string/high_priority</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

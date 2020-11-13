@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FAFAFA</color>
+    <color name="colorPrimaryDark">#33000000</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="blackBackground">#292929</color>
+    <color name="boxStrokeColor">#1554F6</color>
+    <color name="inputBoxTextColor">#202020</color>
+    <color name="inputBoxInactiveTextColor">#8E8E8E</color>
+    <color name="inactiveBoxStrokeColor">#9B9B9B</color>
+    <color name="cardGreenColor">#52CC57</color>
+    <color name="cardYellowColor">#FFD130</color>
+    <color name="cardRedColor">#FF685C</color>
+    <color name="cardBlueColor">#6579EA</color>
+</resources>
