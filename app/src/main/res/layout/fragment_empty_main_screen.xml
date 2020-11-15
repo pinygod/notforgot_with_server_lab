@@ -1,73 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragments.EmptyMainScreenFragment">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefreshEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addNoteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginBottom="32dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/plus_shape"
-        android:visibility="visible"
-        app:backgroundTint="@android:color/black"
-        app:fabSize="auto"
-        app:layout_anchorGravity="right|end"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white" />
-
-        <ImageView
-            android:id="@+id/emptyImage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="115dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="201dp"
-            android:scaleType="fitCenter"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/chilling_man_chilling_at_main_page" />
-
-        <TextView
-            android:id="@+id/emptyText1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="70dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="70dp"
-            android:fontFamily="@font/nunito"
-            android:text="Пока что у вас нет никаких дел."
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emptyImage" />
-
-        <TextView
-            android:id="@+id/emptyText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/nunito"
-            android:text="Хорошего отдыха!"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="@+id/emptyText1"
-            app:layout_constraintStart_toStartOf="@+id/emptyText1"
-            app:layout_constraintTop_toBottomOf="@+id/emptyText1" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addNoteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginBottom="32dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/plus_shape"
+                android:visibility="visible"
+                app:backgroundTint="@android:color/black"
+                app:fabSize="auto"
+                app:layout_anchorGravity="right|end"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@android:color/white" />
+
+
+            <ImageView
+                android:id="@+id/emptyImage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="115dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="201dp"
+                android:scaleType="fitCenter"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/chilling_man_chilling_at_main_page" />
+
+            <TextView
+                android:id="@+id/emptyText1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="70dp"
+                android:fontFamily="@font/nunito"
+                android:text="Пока что у вас нет никаких дел."
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/emptyImage" />
+
+            <TextView
+                android:id="@+id/emptyText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito"
+                android:text="Хорошего отдыха!"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="@+id/emptyText1"
+                app:layout_constraintStart_toStartOf="@+id/emptyText1"
+                app:layout_constraintTop_toBottomOf="@+id/emptyText1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+</RelativeLayout>

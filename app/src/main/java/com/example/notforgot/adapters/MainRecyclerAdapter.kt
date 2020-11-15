@@ -1,19 +1,19 @@
 package com.example.notforgot.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notforgot.Constants
 import com.example.notforgot.R
-import com.example.notforgot.models.Category
-import com.example.notforgot.models.Note
 import com.example.notforgot.models.RecyclerObject
+import com.example.notforgot.models.network.Category
+import com.example.notforgot.models.network.Task
 
 
 class MainRecyclerAdapter(
@@ -52,21 +52,23 @@ class MainRecyclerAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == Constants.TYPE_TITLE) {
             (holder as TitleViewHolder).title.text =
-                (items[position].item as Category).title
+                (items[position].item as Category).name
 
         } else {
-            val item = (items[position].item as Note)
+            val item = (items[position].item as Task)
             (holder as NoteViewHolder).title.text = item.title
             holder.description.text = item.description
-            holder.checkBox.isChecked = item.checkBoxCondition
+            if (item.done == 1) {
+                holder.checkBox.isChecked = true
+            } else {
+                holder.checkBox.isChecked = false
+            }
+
             holder.cardView.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    item.color
-                )
+                Color.parseColor(item.priority.color)
             )
             holder.checkBox.setOnClickListener {
-                listener.onNoteStateChangedToFalse(item, position)
+                listener.onNoteStateChanged(item, position)
             }
             holder.itemView.setOnClickListener {
                 listener.onNoteClicked(item, position)
@@ -88,7 +90,7 @@ class MainRecyclerAdapter(
     }
 
     interface ItemListener {
-        fun onNoteStateChangedToFalse(item: Note, position: Int)
-        fun onNoteClicked(item: Note, position: Int)
+        fun onNoteStateChanged(item: Task, position: Int)
+        fun onNoteClicked(item: Task, position: Int)
     }
 }

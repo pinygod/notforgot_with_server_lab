@@ -1,4 +1,4 @@
-package com.example.notforgot.models
+package com.example.notforgot.models.network
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -14,9 +14,8 @@ import java.io.Serializable
 )
 data class User(
     val email: String,
-    val password: String,
-    val name: String?,
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "user_id")
-    val userId: Int = 0
+    val name: String,
+    @PrimaryKey
+    val id: Int = 0,
+    val api_token: String
 ) : Serializable

@@ -2,19 +2,19 @@ package com.example.notforgot.room
 
 import androidx.room.*
 import com.example.notforgot.models.DataConverter
-import com.example.notforgot.models.Note
+import com.example.notforgot.models.network.Task
 
 @Dao
 interface NoteItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertItem(item: Note)
+    fun insertItem(item: Task)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(list: ArrayList<Note>)
+    fun insertAll(list: ArrayList<Task>)
 
-    @Query("SELECT * FROM Note where title like :name")
-    fun getItem(name: String): Note
+    @Query("SELECT * FROM Task where title like :name")
+    fun getItem(name: String): Task
 
     @Delete
-    fun deleteItem(item: Note)
+    fun deleteItem(item: Task)
 }

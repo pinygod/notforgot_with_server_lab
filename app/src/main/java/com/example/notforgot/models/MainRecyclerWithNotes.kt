@@ -1,17 +1,19 @@
 package com.example.notforgot.models
 
 import androidx.room.*
+import com.example.notforgot.models.network.Category
+import com.example.notforgot.models.network.User
 import java.io.Serializable
 import java.util.*
-
+/*
 @Entity(indices = [Index(value =
 ["title"], unique = true)])
-class Category(
+class Categoryq(
     var title: String,
     @Embedded
     var user: User,
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
+    var catid: Int = 0
 ) : Serializable
 
 @Entity
@@ -35,5 +37,5 @@ class CategoryWithItems(
     var category: Category,
     @Relation(parentColumn = "id", entityColumn = "category_id")
     var items: List<Note>
-) : Serializable
+) : Serializable*/
 

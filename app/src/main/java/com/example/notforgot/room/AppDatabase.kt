@@ -1,17 +1,16 @@
 package com.example.notforgot.room
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.notforgot.models.Category
 import com.example.notforgot.models.DataConverter
-import com.example.notforgot.models.Note
-import com.example.notforgot.models.User
+import com.example.notforgot.models.network.Category
+import com.example.notforgot.models.network.Task
+import com.example.notforgot.models.network.User
 
-@Database(version = 1, entities = [Category::class, Note::class, User::class])
+@Database(version = 1, entities = [Category::class, Task::class, User::class])
 @TypeConverters(DataConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     companion object {

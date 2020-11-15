@@ -8,13 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.notforgot.R
-import com.example.notforgot.models.InputValidation
-import com.example.notforgot.models.PreferenceUtils
-import com.example.notforgot.models.User
-import com.example.notforgot.room.AppDatabase
+import com.example.notforgot.models.*
+import com.example.notforgot.models.network.ApiInteractions
+import com.example.notforgot.models.network.Network
+import com.example.notforgot.models.network.UserLoginForm
+import com.example.notforgot.models.network.UserRegistrationForm
 import com.example.notforgot.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_register.*
-import prog.MD5HashFromString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class RegisterFragment : Fragment() {
 
@@ -29,7 +34,6 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
 
@@ -40,23 +44,63 @@ class RegisterFragment : Fragment() {
             validateInputs()
 
             if (emailOK && nameOK && passwordOK) {
-                passwordString = MD5HashFromString.toMD5Hash(passwordString)
-                if (AppDatabase.get(requireContext()).getUserDao()
-                        .checkCredentials(emailString, passwordString) == null
-                ) {
-                    val user = addUser(emailString, nameString, passwordString)
-                    setPrefs(emailString, passwordString)
-                    val myIntent = Intent(requireContext(), MainActivity::class.java)
-                    myIntent.putExtra("User", user)
-                    startActivity(myIntent)
-                    requireActivity().finish()
-                }
+                processRegistration()
             }
         }
         loginBtn.setOnClickListener {
-            //findNavController().popBackStack()
             findNavController().navigate(R.id.action_login)
         }
+    }
+
+    private fun processRegistration() {
+        GlobalScope.launch(Dispatchers.Main) {
+            var token = withContext(Dispatchers.IO) {
+                try { // trying to login with this data
+                    ApiInteractions(
+                        Network.getInstance(),
+                        requireContext()
+                    ).loginUser(
+                        UserLoginForm(
+                            emailString,
+                            passwordString
+                        )
+                    ).api_token
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            if (token == null) { //user not found so trying to register
+                token = withContext(Dispatchers.IO) {
+                    try {
+                        ApiInteractions(
+                            Network.getInstance(),
+                            requireContext()
+                        ).registerUser(
+                            UserRegistrationForm(
+                                emailString,
+                                nameString,
+                                passwordString
+                            )
+                        ).api_token
+                    } catch (e: Exception) {
+                        null
+                    }
+
+                }
+            }
+            if (token != null) { //successfully registered
+                PreferenceUtils.saveUserToken(requireContext(), token)
+                loginUser()
+            }
+        }
+    }
+
+
+    private fun loginUser() {
+        val myIntent = Intent(requireContext(), MainActivity::class.java)
+        //myIntent.putExtra("User", user)
+        startActivity(myIntent)
+        requireActivity().finish()
     }
 
     override fun onResume() {
@@ -64,7 +108,7 @@ class RegisterFragment : Fragment() {
         requireActivity().setTitle(R.string.register)
     }
 
-    private fun addUser(emailString: String, nameString: String, passwordString: String): User {
+/*    private fun addUser(emailString: String, nameString: String, passwordString: String): User {
         val user = User(
             emailString,
             passwordString,
@@ -73,7 +117,7 @@ class RegisterFragment : Fragment() {
         AppDatabase.get(requireContext()).getUserDao().insertUser(user)
         return AppDatabase.get(requireContext()).getUserDao()
             .checkCredentials(emailString, passwordString)
-    }
+    }*/
 
     private fun validateInputs() {
         if (InputValidation(requireContext())

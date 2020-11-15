@@ -1,8 +1,7 @@
 package com.example.notforgot.room
 
 import androidx.room.*
-import com.example.notforgot.models.DataConverter
-import com.example.notforgot.models.User
+import com.example.notforgot.models.network.User
 
 @Dao
 interface UsersDao {
@@ -19,6 +18,10 @@ interface UsersDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllUsers(users: List<User>)
 
-    @Query("SELECT * FROM User where User.email = :email AND User.password = :password")
-    fun checkCredentials(email: String, password: String): User
+    @Query("SELECT * FROM User where User.email = :email"
+            //+ " AND User.password = :password"
+    )
+    fun checkCredentials(email: String
+                         //, password: String
+     ): User
 }

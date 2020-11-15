@@ -3,6 +3,7 @@ package com.example.notforgot.models
 import android.content.Context
 import android.preference.PreferenceManager
 import com.example.notforgot.Constants
+import com.example.notforgot.ui.MainActivity
 
 
 object PreferenceUtils {
@@ -53,5 +54,23 @@ object PreferenceUtils {
     fun getName(context: Context?): String? {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getString(Constants.KEY_USER_NAME, null)
+    }
+
+    fun getUserToken(context: Context?): String? {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getString(Constants.KEY_USER_TOKEN, null)
+    }
+
+    fun saveUserToken(context: Context, token: String) : Boolean {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val prefsEditor = prefs.edit()
+        prefsEditor.putString(Constants.KEY_USER_TOKEN, token)
+        prefsEditor.apply()
+        return true
+    }
+
+    fun deleteUserToken(context: Context?) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        prefs.edit().remove(Constants.KEY_USER_TOKEN).apply()
     }
 }

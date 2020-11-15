@@ -14,41 +14,37 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.example.notforgot.R
-import com.example.notforgot.models.Category
+import com.example.notforgot.models.CategoryForm
 import com.example.notforgot.models.InputValidation
-import com.example.notforgot.models.Note
-import com.example.notforgot.room.AppDatabase
-import com.example.notforgot.ui.MainActivity
-import kotlinx.android.synthetic.main.activity_create_note.*
+import com.example.notforgot.models.network.*
+import kotlinx.android.synthetic.main.fragment_create_note.*
 import kotlinx.android.synthetic.main.add_category_dialog.view.*
+import kotlinx.coroutines.*
+import java.lang.Exception
 import java.text.DateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 class CreateNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
-    private var note: Note? = null
+    private var note: Task? = null
 
     private var defaultCategory = "Select category"
     private var defaultPriority = "Select priority"
-    private lateinit var categoriesList: ArrayList<String>
-    private lateinit var prioritiesList: ArrayList<String>
+    private lateinit var categoryNames: ArrayList<String>
+    private lateinit var priorityNames: ArrayList<String>
+    private lateinit var categories: ArrayList<Category>
+    private lateinit var priorities: ArrayList<Priority>
     private lateinit var settedDate: Date
     private var isDateSetted = false
     private lateinit var categorySpinnerAdapter: ArrayAdapter<String>
     private lateinit var prioritySpinnerAdapter: ArrayAdapter<String>
-    private var colors = listOf<Int>(
-        R.color.cardBlueColor,
-        R.color.cardRedColor,
-        R.color.cardGreenColor,
-        R.color.cardYellowColor
-    )
     private var isRedacting = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null)
-            note = requireArguments().getSerializable("Note") as Note
+            note = requireArguments().getSerializable("Note") as Task
     }
 
     override fun onCreateView(
@@ -64,24 +60,30 @@ class CreateNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             isRedacting = true
             name.setText(note!!.title)
             description.setText(note!!.description)
-            defaultCategory = note!!.categoryTitle
-            defaultPriority = note!!.priority
-            settedDate = note!!.date
+            defaultCategory = note!!.category.name
+            defaultPriority = note!!.priority.name
+            settedDate = Date(note!!.deadline * 1000)
             isDateSetted = true
             val currentDateString: String =
                 DateFormat.getDateInstance(DateFormat.FULL).format(settedDate)
             date.setText(currentDateString)
         }
         symbolsCounter.text = (description.text.toString().length.toString() + "/120")
+        categoryNames = ArrayList()
+        priorityNames = ArrayList()
         initCategoriesList()
         initPrioritiesList()
         categorySpinnerAdapter =
-            ArrayAdapter(requireContext(),
-                R.layout.spinner_item, categoriesList)
+            ArrayAdapter(
+                requireContext(),
+                R.layout.spinner_item, categoryNames
+            )
         categorySpinner.adapter = categorySpinnerAdapter
         prioritySpinnerAdapter =
-            ArrayAdapter(requireContext(),
-                R.layout.spinner_item, prioritiesList)
+            ArrayAdapter(
+                requireContext(),
+                R.layout.spinner_item, priorityNames
+            )
         prioritySpinner.adapter = prioritySpinnerAdapter
 
         description.addTextChangedListener(object : TextWatcher {
@@ -129,54 +131,80 @@ class CreateNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             ) {
                 val name = name.text.toString()
                 val description = description.text.toString()
-                Collections.shuffle(colors)
+
                 if (isRedacting) {
-                    val category = AppDatabase.get(requireContext()).getCategoryDao().getCategory(
-                        categorySpinner.selectedItem.toString(),
-                        MainActivity.getUser().userId
-                    )
-                    val priority = prioritySpinner.selectedItem.toString()
-                    AppDatabase.get(requireContext()).getItemDao().insertItem(
-                        Note(
-                            name,
-                            description,
-                            priority,
-                            false,
-                            colors[0],
-                            category.category.id,
-                            category.category.title,
-                            settedDate,
-                            note!!.id
-                        )
-                    )
-                    findNavController().popBackStack()
+                    val category =
+                        categories.find { s -> s.name == categorySpinner.selectedItem.toString() }
+
+                    val priority =
+                        priorities.find { s -> s.name == prioritySpinner.selectedItem.toString() }
+
+                    GlobalScope.launch(Dispatchers.Main) {
+                        withContext(Dispatchers.IO) {
+                            var error: String? = null
+                            try {
+                                ApiInteractions(Network.getInstance(), requireContext()).updateTask(
+                                    note!!.taskId,
+                                    TaskForm(
+                                        name,
+                                        description,
+                                        0,
+                                        (settedDate.time / 1000),
+                                        category!!.categoryId,
+                                        priority!!.id
+                                    )
+                                )
+                            } catch (e: Exception) {
+                                error = "Something went wrong..."
+                            }
+                            if (error == null) {
+                                //TODO add this task into db
+                                findNavController().popBackStack()
+                            } else {
+                                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
                 } else {
                     val categoryName = categorySpinner.selectedItem.toString()
-                    val priority = prioritySpinner.selectedItem.toString()
-                    if (categoryName != defaultCategory && priority != defaultPriority) {
+                    val priorityName = prioritySpinner.selectedItem.toString()
+                    if (categoryName != defaultCategory && priorityName != defaultPriority) {
                         val category =
-                            AppDatabase.get(requireContext()).getCategoryDao().getCategory(
-                                categoryName,
-                                MainActivity.getUser().userId
-                            )
-                        AppDatabase.get(requireContext()).getItemDao().insertItem(
-                            Note(
-                                name,
-                                description,
-                                priority,
-                                false,
-                                colors[0],
-                                category.category.id,
-                                category.category.title,
-                                settedDate
-                            )
-                        )
-                        Toast.makeText(
-                            requireContext(),
-                            R.string.succesfull_save,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        findNavController().popBackStack()
+                            categories.find { s -> s.name == categorySpinner.selectedItem.toString() }
+
+                        val priority =
+                            priorities.find { s -> s.name == prioritySpinner.selectedItem.toString() }
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO) {
+                                var error: String? = null
+                                try {
+                                    ApiInteractions(
+                                        Network.getInstance(),
+                                        requireContext()
+                                    ).createTask(
+                                        TaskForm(
+                                            name,
+                                            description,
+                                            0,
+                                            (settedDate.time / 1000),
+                                            category!!.categoryId,
+                                            priority!!.id
+                                        )
+                                    )
+                                } catch (e: Exception) {
+                                    error = "Something went wrong..."
+                                }
+                                if (error == null) {
+                                    //TODO add this task into db
+                                    findNavController().popBackStack()
+                                } else {
+                                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
+                        }
                     } else {
                         savingLayout.visibility = View.INVISIBLE
                         savingAnimation.pauseAnimation()
@@ -206,32 +234,28 @@ class CreateNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
             val dialog = builder.show()
 
+
             view.positiveButton.setOnClickListener {
-                val tempCategory = Category(
-                    view.categoryName.text.toString(),
-                    MainActivity.getUser()
-                )
-                var isNew = true
-                categoriesList.forEach {
-                    if (it == tempCategory.title) {
-                        isNew = false
+                GlobalScope.launch(Dispatchers.Main) {
+                    var error: String? = null
+                    val category = withContext(Dispatchers.IO) {
+                        try {
+                            ApiInteractions(Network.getInstance(), requireContext()).createCategory(
+                                CategoryForm(view.categoryName.text.toString())
+                            )
+                        } catch (e: Exception) {
+                            error = "Something went wrong..."
+                        }
+                    }
+                    if (error == null) {
+                        categories.add(category as Category)
+                        categoryNames.add(category.name)
+                        categorySpinnerAdapter.notifyDataSetChanged()
+                        dialog.dismiss()
+                    } else {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
                     }
                 }
-                if (isNew) {
-                    AppDatabase.get(requireContext()).getCategoryDao().insertCategory(
-                        tempCategory
-                    )
-                    categoriesList.add(tempCategory.title)
-                    categorySpinnerAdapter.notifyDataSetChanged()
-                    dialog.dismiss()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Category with the same  is already exists",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
             }
             view.negativeButton.setOnClickListener {
                 dialog.dismiss()
@@ -247,7 +271,6 @@ class CreateNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             requireActivity().setTitle(R.string.create_note)
     }
 
-
     private fun openDatePicker() {
         val datePicker = DatePickerFragment()
         datePicker.setTargetFragment(this, 0);
@@ -255,18 +278,37 @@ class CreateNoteFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun initPrioritiesList() {
-        prioritiesList = ArrayList()
-        prioritiesList.add(defaultPriority)
-        prioritiesList.addAll(resources.getStringArray(R.array.priorities))
+        priorityNames = ArrayList()
+        priorityNames.add(defaultPriority)
+        GlobalScope.launch(Dispatchers.Main) {
+            priorities = withContext(Dispatchers.IO) {
+                ApiInteractions(
+                    Network.getInstance(),
+                    requireContext()
+                ).getAllPriorities() as ArrayList<Priority>
+            }
+            priorities.forEach {
+                priorityNames.add(it.name)
+            }
+            prioritySpinnerAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun initCategoriesList() {
-        categoriesList = ArrayList()
-        categoriesList.add(defaultCategory)
-        categoriesList.addAll(
-            AppDatabase.get(requireContext()).getCategoryDao()
-                .getTitles(MainActivity.getUser().userId)
-        )
+        categoryNames = ArrayList()
+        categoryNames.add(defaultCategory)
+        GlobalScope.launch(Dispatchers.Main) {
+            categories = withContext(Dispatchers.IO) {
+                ApiInteractions(
+                    Network.getInstance(),
+                    requireContext()
+                ).getAllCategories() as ArrayList<Category>
+            }
+            categories.forEach {
+                categoryNames.add(it.name)
+            }
+            categorySpinnerAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, day: Int) {

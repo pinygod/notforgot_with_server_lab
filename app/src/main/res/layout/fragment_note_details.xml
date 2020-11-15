@@ -76,29 +76,29 @@
             app:layout_constraintTop_toBottomOf="@+id/description"
             app:srcCompat="@drawable/query_builder_24px" />
 
-        <ImageView
-            android:id="@+id/imageView2"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/priorityLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="11dp"
+            app:cardBackgroundColor="#BF3D3D"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description"
-            app:srcCompat="@drawable/priority_label" />
+            app:layout_constraintTop_toBottomOf="@+id/description">
 
-        <TextView
-            android:id="@+id/priority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/nunito"
-            android:text="TextView"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-            app:layout_constraintEnd_toEndOf="@+id/imageView2"
-            app:layout_constraintStart_toStartOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/imageView2" />
+            <TextView
+                android:id="@+id/priority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/nunito"
+                android:paddingStart="15dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="dsafasfsdgsdagashad"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/status"

@@ -8,12 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.notforgot.R
-import com.example.notforgot.models.InputValidation
-import com.example.notforgot.models.PreferenceUtils
-import com.example.notforgot.room.AppDatabase
+import com.example.notforgot.models.*
+import com.example.notforgot.models.network.ApiInteractions
+import com.example.notforgot.models.network.Network
+import com.example.notforgot.models.network.UserLoginForm
 import com.example.notforgot.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_login.*
-import prog.MD5HashFromString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class LoginFragment : Fragment() {
 
@@ -35,24 +40,60 @@ class LoginFragment : Fragment() {
         loginBtn.setOnClickListener {
             validateInputs()
             if (emailOK && passwordOK) {
-                val user = AppDatabase.get(requireContext()).getUserDao()
-                    .checkCredentials(emailString, MD5HashFromString.toMD5Hash(passwordString))
-                if (user != null) {
-                    setPrefs(emailString, MD5HashFromString.toMD5Hash(passwordString))
-                    val myIntent = Intent(requireContext(), MainActivity::class.java)
-                    myIntent.putExtra("User", user)
-                    startActivity(myIntent)
-                    requireActivity().finish()
-                } else {
-                    errorLayout.error = "Email or password is incorrect"
-                }
+                processLogin()
             }
         }
         registerBtn.setOnClickListener {
-            //findNavController().popBackStack()
             findNavController().navigate(R.id.action_register)
         }
     }
+
+    private fun setError(error: String) {
+        errorLayout.error = error
+    }
+
+
+    private fun processLogin() {
+        GlobalScope.launch(Dispatchers.Main) {
+            var error: String = ""
+            val token = withContext(Dispatchers.IO) {
+                try { // trying to login with this data
+                    ApiInteractions(
+                        Network.getInstance(),
+                        requireContext()
+                    ).loginUser(
+                        UserLoginForm(
+                            emailString,
+                            passwordString
+                        )
+                    ).api_token
+                } catch (e: Exception) {
+                    if (e.message!! == "HTTP 404 Not Found") {
+                        error = "Email or password is incorrect"
+                        null
+                    } else {
+                        error = "Something went wrong..."
+                        null
+                    }
+                }
+            }
+            if (token != null) { //successfully logged in
+                PreferenceUtils.saveUserToken(requireContext(), token)
+                loginUser()
+            }
+            else{
+                errorLayout.error = error
+            }
+        }
+    }
+
+    private fun loginUser() {
+        val myIntent = Intent(requireContext(), MainActivity::class.java)
+        //myIntent.putExtra("User", user)
+        startActivity(myIntent)
+        requireActivity().finish()
+    }
+
 
     override fun onResume() {
         super.onResume()

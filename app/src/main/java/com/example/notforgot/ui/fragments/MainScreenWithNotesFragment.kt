@@ -1,10 +1,11 @@
 package com.example.notforgot.ui.fragments
 
-import android.content.Context
 import android.os.Bundle
+import android.os.TokenWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -15,26 +16,24 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.notforgot.Constants
 import com.example.notforgot.R
 import com.example.notforgot.adapters.MainRecyclerAdapter
-import com.example.notforgot.models.Note
 import com.example.notforgot.models.RecyclerObject
-import com.example.notforgot.room.AppDatabase
+import com.example.notforgot.models.network.ApiInteractions
+import com.example.notforgot.models.network.Network
+import com.example.notforgot.models.network.Task
+import com.example.notforgot.models.network.TaskForm
 import com.example.notforgot.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_main_screen_with_notes.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class MainScreenWithNotesFragment : Fragment(), MainRecyclerAdapter.ItemListener,
     SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var recyclerAdapter: MainRecyclerAdapter
     private lateinit var recyclerObjectsList: ArrayList<RecyclerObject>
-    private lateinit var listener: DataUpdater
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            listener = context as DataUpdater
-        } catch (castException: ClassCastException) {
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +43,8 @@ class MainScreenWithNotesFragment : Fragment(), MainRecyclerAdapter.ItemListener
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerObjectsList = MainActivity.getRecyclerObjects()
+        recyclerObjectsList = ArrayList()
+        updateValues()
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerAdapter = MainRecyclerAdapter(
@@ -61,21 +61,47 @@ class MainScreenWithNotesFragment : Fragment(), MainRecyclerAdapter.ItemListener
         }
     }
 
-    override fun onNoteStateChangedToFalse(item: Note, position: Int) {
-        item.checkBoxCondition = !item.checkBoxCondition
-        AppDatabase.get(requireActivity()).getItemDao().insertItem(item)
+    override fun onNoteStateChanged(item: Task, position: Int) {
+        var error: String? = null
+        GlobalScope.launch(Dispatchers.Main) {
+            val newItem = withContext(Dispatchers.IO) {
+                try {
+                    ApiInteractions(Network.getInstance(), requireContext()).updateTask(
+                        item.taskId, TaskForm(
+                            item.title,
+                            item.description,
+                            if (item.done == 1)
+                                0
+                            else
+                                1,
+                            item.deadline,
+                            item.category.categoryId,
+                            item.priority.id
+                        )
+                    )
+                } catch (e: Exception) {
+                    error = "Unable to change state now."
+                }
+
+            }
+            if (error == null) {
+                item.done = (newItem as Task).done
+            } else {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+            }
+        }
+        //item.checkBoxCondition = !item.checkBoxCondition
+        //AppDatabase.get(requireActivity()).getItemDao().insertItem(item)
         recyclerAdapter.notifyDataSetChanged()
     }
 
     override fun onResume() {
         super.onResume()
         requireActivity().setTitle(R.string.app_name)
-        listener.updateValues()
-        recyclerObjectsList = MainActivity.getRecyclerObjects()
-        recyclerAdapter.updateList(recyclerObjectsList)
+        updateValues()
     }
 
-    override fun onNoteClicked(item: Note, position: Int) {
+    override fun onNoteClicked(item: Task, position: Int) {
         findNavController().navigate(R.id.noteDetailsFragment, bundleOf("Note" to item))
     }
 
@@ -96,27 +122,34 @@ class MainScreenWithNotesFragment : Fragment(), MainRecyclerAdapter.ItemListener
                 ) {
                     val position = viewHolder.adapterPosition
                     if (recyclerObjectsList[position].type == Constants.TYPE_NOTE) {
-                        AppDatabase.get(context!!).getItemDao()
-                            .deleteItem(recyclerObjectsList[position].item as Note)
-                        if (recyclerObjectsList.size > position + 1) {
-                            if (recyclerObjectsList[position - 1].type == Constants.TYPE_TITLE && recyclerObjectsList[position + 1].type == Constants.TYPE_TITLE) {
-                                recyclerObjectsList.removeAt(viewHolder.adapterPosition)
-                                recyclerObjectsList.removeAt(position - 1)
-                            } else {
-                                recyclerObjectsList.removeAt(viewHolder.adapterPosition)
+                        GlobalScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.IO) {
+                                ApiInteractions(Network.getInstance(), requireContext()).deleteTask(
+                                    (recyclerObjectsList[position].item as Task).taskId
+                                )
                             }
-                        } else {
-                            if (recyclerObjectsList[position - 1].type == Constants.TYPE_TITLE) {
-                                recyclerObjectsList.removeAt(viewHolder.adapterPosition)
-                                recyclerObjectsList.removeAt(position - 1)
+                            /*AppDatabase.get(context!!).getItemDao()
+                            .deleteItem(recyclerObjectsList[position].item as Task)*/
+                            if (recyclerObjectsList.size > position + 1) {
+                                if (recyclerObjectsList[position - 1].type == Constants.TYPE_TITLE && recyclerObjectsList[position + 1].type == Constants.TYPE_TITLE) {
+                                    recyclerObjectsList.removeAt(viewHolder.adapterPosition)
+                                    recyclerObjectsList.removeAt(position - 1)
+                                } else {
+                                    recyclerObjectsList.removeAt(viewHolder.adapterPosition)
+                                }
                             } else {
-                                recyclerObjectsList.removeAt(viewHolder.adapterPosition)
+                                if (recyclerObjectsList[position - 1].type == Constants.TYPE_TITLE) {
+                                    recyclerObjectsList.removeAt(viewHolder.adapterPosition)
+                                    recyclerObjectsList.removeAt(position - 1)
+                                } else {
+                                    recyclerObjectsList.removeAt(viewHolder.adapterPosition)
+                                }
                             }
+                            MainActivity.setRecyclerObjects(recyclerObjectsList)
+                            recyclerAdapter.notifyDataSetChanged()
+                            if (recyclerObjectsList.isEmpty())
+                                findNavController().popBackStack()
                         }
-                        MainActivity.setRecyclerObjects(recyclerObjectsList)
-                        recyclerAdapter.notifyDataSetChanged()
-                        if (recyclerObjectsList.isEmpty())
-                            findNavController().popBackStack()
                     }
                 }
 
@@ -124,15 +157,36 @@ class MainScreenWithNotesFragment : Fragment(), MainRecyclerAdapter.ItemListener
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
     }
 
-
-    interface DataUpdater {
-        fun updateValues()
+    override fun onRefresh() {
+        updateValues()
     }
 
-    override fun onRefresh() {
-        listener.updateValues()
-        recyclerObjectsList = MainActivity.getRecyclerObjects()
-        recyclerAdapter.updateList(recyclerObjectsList)
-        swiperefresh.isRefreshing = false
+
+    private fun updateValues() {
+        GlobalScope.launch(Dispatchers.Main) {
+            val categoriesList = withContext(Dispatchers.IO) {
+                ApiInteractions(Network.getInstance(), requireContext()).getAllCategories()
+            }
+            val tasksList = withContext(Dispatchers.IO) {
+                ApiInteractions(Network.getInstance(), requireContext()).getAllTasks()
+            }
+            recyclerObjectsList.clear()
+            categoriesList.forEach {
+                val tasksOfCategory: List<Task> = tasksList.filter { s -> s.category == it }
+                if (!tasksOfCategory.isEmpty()) {
+                    recyclerObjectsList.add(RecyclerObject(Constants.TYPE_TITLE, it))
+                    tasksOfCategory.forEach {
+                        recyclerObjectsList.add(RecyclerObject(Constants.TYPE_NOTE, it))
+                    }
+                }
+            }
+            if(recyclerObjectsList.isEmpty()){
+                findNavController().popBackStack()
+                findNavController().navigate(R.id.emptyMainScreenFragment)
+            }
+            MainActivity.setRecyclerObjects(recyclerObjectsList)
+            recyclerAdapter.updateList(recyclerObjectsList)
+            swiperefresh.isRefreshing = false
+        }
     }
 }
