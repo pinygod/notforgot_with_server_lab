@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="@color/colorPrimary"
+    android:id="@+id/toolbar"
+    android:theme="@style/ThemeOverlay.AppCompat.Light"
+    android:elevation="7dp"
+    >
+
+    <TextView
+        android:id="@+id/toolbarTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/nunito"
+        android:text="Title"
+        android:textColor="#DE000000"
+        android:textSize="20sp" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/ic_baseline_close_24"
+        android:tint="#000000"
+        android:id="@+id/exitButton"/>
+
+</RelativeLayout>

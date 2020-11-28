@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.notforgot.ui.fragments.LoginFragment"
+        android:name="com.example.notforgot.ui.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -15,18 +15,12 @@
             app:destination="@id/registerFragment"
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_close_exit"
-            app:popUpTo="@id/registerFragment" />
+            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.notforgot.ui.fragments.RegisterFragment"
+        android:name="com.example.notforgot.ui.register.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" >
-        <action
-            android:id="@+id/action_login"
-            app:destination="@id/loginFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_close_exit"
-            app:popUpTo="@id/loginFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_register" />
 </navigation>

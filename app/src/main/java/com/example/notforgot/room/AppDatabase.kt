@@ -6,11 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.notforgot.models.DataConverter
-import com.example.notforgot.models.network.Category
-import com.example.notforgot.models.network.Task
-import com.example.notforgot.models.network.User
+import com.example.notforgot.models.network.data.Category
+import com.example.notforgot.models.network.data.Priority
+import com.example.notforgot.models.network.data.Task
+import com.example.notforgot.models.network.data.User
 
-@Database(version = 1, entities = [Category::class, Task::class, User::class])
+@Database(version = 1, entities = [Category::class, Task::class, Priority::class])
 @TypeConverters(DataConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     companion object {
@@ -34,6 +35,6 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     abstract fun getCategoryDao(): CategoriesDao
-    abstract fun getItemDao(): NoteItemDao
-    abstract fun getUserDao(): UsersDao
+    abstract fun getTaskDao(): TaskDao
+    abstract fun getPriorityDao(): PriorityDao
 }

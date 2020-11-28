@@ -7,50 +7,62 @@
 
     <fragment
         android:id="@+id/emptyMainScreenFragment"
-        android:name="com.example.notforgot.ui.fragments.EmptyMainScreenFragment"
+        android:name="com.example.notforgot.ui.main_screen.empty.EmptyMainScreenFragment"
         android:label="fragment_empty_main_screen"
         tools:layout="@layout/fragment_empty_main_screen" >
         <action
-            android:id="@+id/action_show_notes"
-            app:destination="@id/mainScreenWithNotesFragment" />
-        <action
-            android:id="@+id/action_add_note"
-            app:destination="@id/createNoteFragment" />
+            android:id="@+id/action_emptyMainScreenFragment_to_mainScreenWithNotesFragment"
+            app:destination="@id/mainScreenWithNotesFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/mainScreenWithNotesFragment"
-        android:name="com.example.notforgot.ui.fragments.MainScreenWithNotesFragment"
+        android:name="com.example.notforgot.ui.main_screen.MainScreenWithNotesFragment"
         android:label="fragment_main_screen_with_notes"
         tools:layout="@layout/fragment_main_screen_with_notes" >
         <action
-            android:id="@+id/action_note_details"
-            app:destination="@id/noteDetailsFragment" />
+            android:id="@+id/action_mainScreenWithNotesFragment_to_noteDetailsFragment"
+            app:destination="@id/noteDetailsFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
         <action
-            android:id="@+id/action_add_note"
-            app:destination="@id/createNoteFragment" />
+            android:id="@+id/action_mainScreenWithNotesFragment_to_createNoteFragment"
+            app:destination="@id/createNoteFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/noteDetailsFragment"
-        android:name="com.example.notforgot.ui.fragments.NoteDetailsFragment"
+        android:name="com.example.notforgot.ui.note_details.NoteDetailsFragment"
         android:label="fragment_note_details"
         tools:layout="@layout/fragment_note_details" >
         <action
-            android:id="@+id/action_back_from_details"
-            app:destination="@id/mainScreenWithNotesFragment" />
-        <action
-            android:id="@+id/action_redact_note"
-            app:destination="@id/createNoteFragment" />
+            android:id="@+id/action_noteDetailsFragment_to_createNoteFragment"
+            app:destination="@id/createNoteFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popExitAnim="@anim/fragment_close_exit"  />
+        <argument
+            android:name="task"
+            app:argType="com.example.notforgot.models.network.data.Task" />
     </fragment>
     <fragment
         android:id="@+id/createNoteFragment"
-        android:name="com.example.notforgot.ui.fragments.CreateNoteFragment"
+        android:name="com.example.notforgot.ui.create_note.CreateNoteFragment"
         android:label="fragment_create_note"
         tools:layout="@layout/fragment_create_note" >
-    <action
-        android:id="@+id/action_back_from_creation"
-        app:destination="@id/mainScreenWithNotesFragment" />
-    <action
-        android:id="@+id/action_successfully_added"
-        app:destination="@id/mainScreenWithNotesFragment" />
+        <argument
+            android:name="task"
+            app:argType="com.example.notforgot.models.network.data.Task"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

@@ -13,18 +13,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.NoteDetailsActivity"
-            android:label="@string/note"
-            android:parentActivityName=".ui.MainActivity"/>
-        <activity
-            android:name=".ui.CreateNoteActivity"
-            android:label="@string/create_note"
-            android:parentActivityName=".ui.MainActivity" />
-        <activity
-            android:name=".ui.RegisterActivity"
-            android:label="@string/register" />
-        <activity
             android:name=".ui.LoginActivity"
+            android:theme="@style/AppThemeActionBar"
             android:label="@string/login" />
         <activity
             android:name=".ui.SplashActivity"

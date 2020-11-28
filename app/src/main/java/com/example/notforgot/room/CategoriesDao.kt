@@ -1,8 +1,8 @@
 package com.example.notforgot.room
 
 import androidx.room.*
-import com.example.notforgot.models.DataConverter
-import com.example.notforgot.models.network.Category
+import com.example.notforgot.models.network.data.Category
+import com.example.notforgot.models.network.data.CategoryWithTasks
 
 
 @Dao
@@ -19,12 +19,15 @@ interface CategoriesDao {
 
     @Transaction
     @Query("SELECT * FROM Category")
-    fun getCategoryWithItems(): List<Category>
+    fun getCategoryWithTasks(): List<CategoryWithTasks>
 
     @Query("SELECT * FROM Category")
     fun getAllCategories(): List<Category>
 
     @Query("SELECT category_name FROM Category")
     fun getTitles(): List<String>
+
+    @Query("DELETE FROM Category")
+    fun deleteAllCategories()
 
 }

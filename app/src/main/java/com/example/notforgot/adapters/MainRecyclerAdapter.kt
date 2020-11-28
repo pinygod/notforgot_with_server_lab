@@ -9,11 +9,11 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notforgot.Constants
+import com.example.notforgot.utils.Constants
 import com.example.notforgot.R
 import com.example.notforgot.models.RecyclerObject
-import com.example.notforgot.models.network.Category
-import com.example.notforgot.models.network.Task
+import com.example.notforgot.models.network.data.Category
+import com.example.notforgot.models.network.data.Task
 
 
 class MainRecyclerAdapter(
@@ -58,11 +58,7 @@ class MainRecyclerAdapter(
             val item = (items[position].item as Task)
             (holder as NoteViewHolder).title.text = item.title
             holder.description.text = item.description
-            if (item.done == 1) {
-                holder.checkBox.isChecked = true
-            } else {
-                holder.checkBox.isChecked = false
-            }
+            holder.checkBox.isChecked = item.done == 1
 
             holder.cardView.setCardBackgroundColor(
                 Color.parseColor(item.priority.color)

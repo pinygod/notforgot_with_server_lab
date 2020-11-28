@@ -1,7 +1,7 @@
 package com.example.notforgot.room
 
 import androidx.room.*
-import com.example.notforgot.models.network.User
+import com.example.notforgot.models.network.data.User
 
 @Dao
 interface UsersDao {

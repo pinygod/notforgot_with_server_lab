@@ -3,9 +3,7 @@ package com.example.notforgot.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.notforgot.models.PreferenceUtils
-import com.example.notforgot.room.AppDatabase
-import com.example.notforgot.models.network.User
+import com.example.notforgot.utils.PreferenceUtils
 
 
 class SplashActivity : AppCompatActivity() {

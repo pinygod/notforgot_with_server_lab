@@ -1,51 +1,49 @@
 package com.example.notforgot.ui
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.airbnb.lottie.LottieAnimationView
 import com.example.notforgot.*
-import com.example.notforgot.models.PreferenceUtils
 import com.example.notforgot.models.RecyclerObject
 import com.example.notforgot.models.network.*
+import com.example.notforgot.models.network.data.Category
+import com.example.notforgot.models.network.data.Task
+import com.example.notforgot.models.network.data.TaskForm
 import com.example.notforgot.room.AppDatabase
-import com.example.notforgot.ui.fragments.EmptyMainScreenFragment
-import com.example.notforgot.ui.fragments.MainScreenWithNotesFragment
+import com.example.notforgot.utils.Constants
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private lateinit var recyclerObjectsList: ArrayList<RecyclerObject>
+        private lateinit var synchronizationLayout: ConstraintLayout
+        private lateinit var synchronizationAnimation: LottieAnimationView
 
-        fun setRecyclerObjects(list: ArrayList<RecyclerObject>) {
-            recyclerObjectsList = list
+        fun enableSynchronizationAnimation() {
+            synchronizationAnimation.progress = 0f
+            synchronizationLayout.visibility = View.VISIBLE
+            synchronizationAnimation.playAnimation()
+        }
+
+        fun disableSynchronizationAnimation() {
+            synchronizationLayout.visibility = View.INVISIBLE
+            synchronizationAnimation.pauseAnimation()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var fragmentsCount = 1
-        if (recyclerObjectsList.isEmpty())
-            fragmentsCount = 0
-
-        if (fragment.childFragmentManager.backStackEntryCount <= fragmentsCount) {
-            PreferenceUtils.deleteUserToken(this)
-            startActivity(Intent(this, SplashActivity::class.java))
-            finish()
-        } else {
-            super.onBackPressed()
-        }
-
-        return true
+        MainActivity.synchronizationLayout = synchronizationLayout
+        MainActivity.synchronizationAnimation = synchronizationAnimation
     }
 
 }
