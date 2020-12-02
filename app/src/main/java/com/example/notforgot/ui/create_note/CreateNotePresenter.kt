@@ -76,7 +76,10 @@ class CreateNotePresenter :
             if (error != null) {
                 view!!.showError(error)
             }
-            view!!.finish()
+            if (task != null) {
+                view?.finishWhenRedacting()
+            } else
+                view?.finish()
         }
 
     }

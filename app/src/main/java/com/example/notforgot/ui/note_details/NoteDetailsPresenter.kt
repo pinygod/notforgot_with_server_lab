@@ -20,6 +20,7 @@ class NoteDetailsPresenter : NoteDetailsContract.Presenter {
     override fun processTaskDetails(task: Task, resources: Resources) {
         view?.setTitle(task.title)
         view?.setDescription(task.description)
+        view?.setCategory(task.category.name)
         view?.setDate(DateFormat.getDateInstance(DateFormat.FULL).format(Date(task.deadline * 1000)))
         if (task.done == 1){
             view?.setStatus(resources.getString(R.string.completed))

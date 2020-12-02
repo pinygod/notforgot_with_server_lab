@@ -50,15 +50,15 @@ class CreateNoteFragment : Fragment(), CreateNoteContract.View, DatePickerDialog
         presenter.attachView(this, requireContext(), resources, task)
 
         calendarButton.setOnClickListener {
-            presenter.onDateClicked(this, requireFragmentManager())
+            presenter.onDateClicked(this, parentFragmentManager)
         }
 
         date.setOnClickListener {
-            presenter.onDateClicked(this, requireFragmentManager())
+            presenter.onDateClicked(this, parentFragmentManager)
         }
 
         noteDate.setOnClickListener {
-            presenter.onDateClicked(this, requireFragmentManager())
+            presenter.onDateClicked(this, parentFragmentManager)
         }
 
         backButton.setOnClickListener {

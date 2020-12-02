@@ -22,9 +22,7 @@ class EmptyMainScreenModel : EmptyMainScreenContract.Model {
 
     override fun deleteUserInfo(context: Context) {
         PreferenceUtils.deleteUserToken(context)
-        AppDatabase.get(context).getTaskDao().deleteAllTasks()
-        AppDatabase.get(context).getCategoryDao().deleteAllCategories()
-        AppDatabase.get(context).getPriorityDao().deleteAllPriorities()
+        AppDatabase.get(context).clearAllTables()
     }
 
 
