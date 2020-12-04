@@ -46,4 +46,47 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/synchronizationLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/saving_layout_shape"
+        android:elevation="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/synchronizationAnimation"
+            android:layout_width="207dp"
+            android:layout_height="207dp"
+            android:paddingStart="18dp"
+            android:paddingTop="27dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="21dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="false"
+            app:lottie_colorFilter="@color/blackBackground"
+            app:lottie_fileName="saving.json" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito"
+            android:paddingBottom="15dp"
+            android:text="@string/synchronization"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="@+id/synchronizationAnimation"
+            app:layout_constraintStart_toStartOf="@+id/synchronizationAnimation"
+            app:layout_constraintTop_toBottomOf="@+id/synchronizationAnimation" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

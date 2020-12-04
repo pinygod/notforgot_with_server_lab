@@ -105,6 +105,17 @@ class MainScreenWithNotesFragment : Fragment(), MainRecyclerAdapter.ItemListener
         presenter.onSwipeRefresh(requireContext())
     }
 
+   override fun enableSynchronizationAnimation() {
+        synchronizationAnimation.progress = 0f
+        synchronizationLayout.visibility = View.VISIBLE
+        synchronizationAnimation.playAnimation()
+    }
+
+    override fun disableSynchronizationAnimation() {
+        synchronizationLayout.visibility = View.INVISIBLE
+        synchronizationAnimation.pauseAnimation()
+    }
+
     override fun setToolbarTitle(title: String) {
         this.toolbarTitle.text = title
     }

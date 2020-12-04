@@ -43,8 +43,22 @@ class MainScreenWithNotesPresenter :
     }
 
     override fun onCreate(context: Context) {
+        synchronize(context)
+    }
+
+    private fun synchronize(context: Context) {
         GlobalScope.launch(Dispatchers.IO) {
-            model!!.synchronize(context)
+            model!!.synchronize(context) { result ->
+                if (result) {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        view?.enableSynchronizationAnimation()
+                    }
+                } else {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        view?.disableSynchronizationAnimation()
+                    }
+                }
+            }
         }
     }
 

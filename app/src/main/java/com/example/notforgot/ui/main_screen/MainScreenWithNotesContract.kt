@@ -1,6 +1,7 @@
 package com.example.notforgot.ui.main_screen
 
 import android.content.Context
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notforgot.adapters.MainRecyclerAdapter
 import com.example.notforgot.models.IBaseModel
@@ -12,6 +13,8 @@ import com.example.notforgot.models.network.data.Task
 interface MainScreenWithNotesContract : IBaseView {
     interface View : IBaseView, MainRecyclerAdapter.ItemListener {
         fun logout()
+        fun enableSynchronizationAnimation()
+        fun disableSynchronizationAnimation()
         fun showEmptyScreen()
         fun stopRefreshAnimation()
         fun attachRecyclerAdapter(adapter: MainRecyclerAdapter)
@@ -35,7 +38,7 @@ interface MainScreenWithNotesContract : IBaseView {
     }
 
     interface Model : IBaseModel {
-        suspend fun synchronize(context: Context)
+        suspend fun synchronize(context: Context, callback: (result: Boolean) -> Unit)
         suspend fun getTasks(context: Context): ArrayList<RecyclerObject>
         fun deleteUserInfo(context: Context)
         suspend fun deleteTask(context: Context, position: Int)

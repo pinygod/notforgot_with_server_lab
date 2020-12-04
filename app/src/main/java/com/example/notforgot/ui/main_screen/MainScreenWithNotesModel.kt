@@ -155,13 +155,11 @@ class MainScreenWithNotesModel : MainScreenWithNotesContract.Model {
         return recyclerObjectsList.isEmpty()
     }
 
-    override suspend fun synchronize(context: Context) {
+    override suspend fun synchronize(context: Context, callback: (result: Boolean) -> Unit) {
         isSynchronized = false
 
         while (!isSynchronized) {
-            withContext(Dispatchers.Main) {
-                MainActivity.enableSynchronizationAnimation()
-            }
+            callback.invoke(true)
             var error = false
 
             val api = Api.getInstance(context)
@@ -238,9 +236,7 @@ class MainScreenWithNotesModel : MainScreenWithNotesContract.Model {
                     Log.d("Synchronization", "Error while fetching tasks")
                 }
             }
-            withContext(Dispatchers.Main) {
-                MainActivity.disableSynchronizationAnimation()
-            }
+            callback.invoke(false)
             if (error) {
                 Log.d("Synchronization", "Sleep for 15s")
                 delay(15000)
