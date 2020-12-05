@@ -56,7 +56,7 @@ class EmptyMainScreenModel : EmptyMainScreenContract.Model {
             }
         }
 
-        return !error
+        return false
     }
 
 

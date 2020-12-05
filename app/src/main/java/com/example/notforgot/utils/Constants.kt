@@ -10,4 +10,5 @@ object Constants {
     const val KEY_SYNCRONIZATION = "synchronization"
     const val TO_BE_ADDED = -999
     const val TO_BE_DELETED = -888
+    const val TO_BE_UPDATED = -777
 }

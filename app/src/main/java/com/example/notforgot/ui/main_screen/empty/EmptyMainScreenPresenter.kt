@@ -48,6 +48,7 @@ class EmptyMainScreenPresenter :
                 model!!.checkForTasksExistence(context)
             }) {
                 true -> this@EmptyMainScreenPresenter.view?.showTasks()
+                false -> view?.stopRefreshAnimation()
             }
         }
     }

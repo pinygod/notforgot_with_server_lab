@@ -8,10 +8,6 @@ import java.io.Serializable
 
 @Entity
 data class Task(
-    @PrimaryKey
-    @ColumnInfo(name = "task_id")
-    @SerializedName("id")
-    val taskId: Int,
     val title: String,
     val description: String,
     var done: Int,
@@ -20,5 +16,9 @@ data class Task(
     val category: Category,
     @Embedded
     val priority: Priority,
-    var created: Int
+    var created: Int,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "task_id")
+    @SerializedName("id")
+    val taskId: Int = 0
 ) : Serializable

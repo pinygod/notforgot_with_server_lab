@@ -75,7 +75,11 @@ class EmptyMainScreenFragment : Fragment(), EmptyMainScreenContract.View {
     }
 
     override fun gotoAddTask() {
-        findNavController().navigate(EmptyMainScreenFragmentDirections.actionEmptyMainScreenFragmentToMainScreenWithNotesFragment())
+        findNavController().navigate(EmptyMainScreenFragmentDirections.actionEmptyMainScreenFragmentToCreateNoteFragment())
+    }
+
+    override fun stopRefreshAnimation() {
+        swiperefreshEmpty.isRefreshing = false
     }
 
 }

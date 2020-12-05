@@ -10,6 +10,7 @@ interface EmptyMainScreenContract {
         fun logout()
         fun showTasks()
         fun gotoAddTask()
+        fun stopRefreshAnimation()
     }
 
     interface Presenter : IBasePresenter {

@@ -164,9 +164,8 @@ class MainScreenWithNotesModel : MainScreenWithNotesContract.Model {
 
             val api = Api.getInstance(context)
             val localValues = AppDatabase.get(context).getTaskDao().getAllTasks()
-            val newTasks = localValues.filter { s -> s.created == Constants.TO_BE_ADDED }
-            val tasksToUpload = newTasks.filter { s -> s.taskId == Constants.TO_BE_ADDED }
-            val tasksToUpdate = newTasks.filter { s -> s.taskId != Constants.TO_BE_ADDED }
+            val tasksToUpload = localValues.filter { s -> s.created == Constants.TO_BE_ADDED }
+            val tasksToUpdate = localValues.filter { s -> s.created == Constants.TO_BE_UPDATED }
             val tasksToDelete = localValues.filter { s -> s.created == Constants.TO_BE_DELETED }
             tasksToDelete.forEach {
                 try {

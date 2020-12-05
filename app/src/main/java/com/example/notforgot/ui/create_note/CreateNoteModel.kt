@@ -94,15 +94,14 @@ class CreateNoteModel : CreateNoteContract.Model {
         context: Context
     ): String? {
 
-        val newId: Int
+        var newId: Int? = null
         var newDone = 0
 
         if (note != null) {
             newId = note.taskId
             note.created = Constants.TO_BE_DELETED
             newDone = note.done
-        } else
-            newId = Constants.TO_BE_ADDED
+        }
 
         val category =
             categories.find { s -> s.name == categoryTitle }!! // can not return null cuz titles were loaded from these lists
@@ -131,23 +130,31 @@ class CreateNoteModel : CreateNoteContract.Model {
 
         if (error == null) {
             AppDatabase.get(context).getTaskDao().insertTask(task as Task)
-            //MainActivity.addTask(task)
             return error
         } else {
-
-            val newTask = Task(
-                newId,
-                form.title,
-                form.description,
-                form.done,
-                form.deadline,
-                Category(form.categoryId, "Will be shown later"),
-                Priority(form.priorityId, "Will be shown later", "#CCCCCC"),
-                Constants.TO_BE_ADDED
-            )
+            val newTask = if (newId != null) {
+                Task(
+                    form.title,
+                    form.description,
+                    form.done,
+                    form.deadline,
+                    Category(form.categoryId, "Will be shown later"),
+                    Priority(form.priorityId, "Will be shown later", "#CCCCCC"),
+                    Constants.TO_BE_UPDATED,
+                    newId
+                )
+            } else {
+                Task(
+                    form.title,
+                    form.description,
+                    form.done,
+                    form.deadline,
+                    Category(form.categoryId, "Will be shown later"),
+                    Priority(form.priorityId, "Will be shown later", "#CCCCCC"),
+                    Constants.TO_BE_ADDED
+                )
+            }
             AppDatabase.get(context).getTaskDao().insertTask(newTask)
-            //MainActivity.addTask(newTask)
-            //MainActivity.synchronize()
             return error
         }
     }
